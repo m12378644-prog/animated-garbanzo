@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>محارب البلد 💪 | منصة تحفيظ القرآن الكريم</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+body{background:#05070f;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;color:#fff;overflow-x:hidden;position:relative;}
+.space-glow,.space-glow-2{position:fixed;border-radius:50%;pointer-events:none;z-index:1;}
+.space-glow{width:600px;height:600px;background:radial-gradient(circle,rgba(6,182,212,.25),transparent 70%);filter:blur(100px);animation:float1 25s infinite alternate ease-in-out;}
+.space-glow-2{width:700px;height:700px;background:radial-gradient(circle,rgba(147,51,234,.2),transparent 70%);filter:blur(120px);animation:float2 30s infinite alternate ease-in-out;}
+@keyframes float1{0%{transform:translate(-40%,-30%) scale(1);}100%{transform:translate(30%,40%) scale(1.2);}}
+@keyframes float2{0%{transform:translate(40%,40%) scale(1);}100%{transform:translate(-20%,-30%) scale(1.1);}}
+.container{width:100%;max-width:500px;background:rgba(10,15,30,.75);backdrop-filter:blur(25px);border:1px solid rgba(34,211,238,.4);border-radius:24px;padding:35px;position:relative;z-index:100;}
+h2{text-align:center;color:#22d3ee;margin-bottom:10px;}
+.subtitle{text-align:center;color:#94a3b8;margin-bottom:25px;font-size:14px;line-height:1.7;}
+.form-group{margin-bottom:18px;}
+label{display:block;margin-bottom:6px;color:#cbd5e1;font-size:14px;}
+input{width:100%;padding:14px;border-radius:12px;border:2px solid #273549;background:#0b1220;color:#fff;outline:none;}
+input:focus{border-color:#22d3ee;box-shadow:0 0 10px rgba(34,211,238,.3);}
+.error{display:none;color:#ef4444;font-size:12px;margin-top:5px;}
+
+button{width:100%;padding:15px;border:none;border-radius:12px;cursor:pointer;font-weight:700;color:#fff;background:linear-gradient(90deg,#0891b2,#22d3ee);transition: all 0.3s ease;display:flex;justify-content:center;align-items:center;gap:10px;}
+button:active{transform:scale(.98);}
+button:disabled {background: #1e293b;border: 1px solid #334155;cursor: not-allowed;}
+
+.spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #22d3ee;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);justify-content:center;align-items:center;z-index:9999;padding:20px;}
+.modal-box{width:100%;max-width:420px;background:#0f172a;border-radius:20px;padding:25px;text-align:center;border:1px solid rgba(34,211,238,.4);}
+.modal-box h3 {color: #22d3ee;margin-bottom: 12px;}
+.modal-box p {color: #cbd5e1;font-size: 14px;line-height: 1.6;}
+.modal-buttons{display:flex;gap:10px;margin-top:20px;}
+.modal-buttons button{flex:1;}
+.modal-buttons button#no {background: #334155;color: #f1f5f9;}
+.success{display:none;margin-top:15px;padding:20px;border-radius:12px;background:rgba(34,197,94,.15);border:2px solid rgba(34,197,94,.4);color:#4ade80;text-align:center;font-weight:700;font-size:16px;box-shadow: 0 0 15px rgba(34,197,94,0.2);}
+</style>
+</head>
+<body>
+
+<div class="space-glow"></div>
+<div class="space-glow-2"></div>
+
+<div class="container">
+<h2>محارب البلد 💪</h2>
+<p class="subtitle">سجل بياناتك وسنتواصل معك قريبًا بإذن الله</p>
+
+<form id="form">
+<div class="form-group">
+<label>الاسم الأول</label>
+<input id="firstName" autocomplete="off">
+<div class="error" id="e1">يرجى إدخال اسم صحيح (حروف فقط).</div>
+</div>
+
+<div class="form-group">
+<label>اسم العائلة</label>
+<input id="lastName" autocomplete="off">
+<div class="error" id="e2">يرجى إدخال اسم العائلة بشكل صحيح.</div>
+</div>
+
+<div class="form-group">
+<label>رمز الدولة</label>
+<input id="code" placeholder="20" value="20" autocomplete="off">
+</div>
+
+<div class="form-group">
+<label>رقم الهاتف</label>
+<input id="phone" type="tel" placeholder="اكتب الرقم هنا" autocomplete="off">
+<div class="error" id="e3">يرجى إدخال رقم هاتف صحيح.</div>
+</div>
+
+<button type="submit" id="submitBtn">
+    <span id="btnText">إرسال</span>
+    <div class="spinner" id="btnSpinner"></div>
+</button>
+</form>
+
+<div class="success" id="success">
+    تم إرسال بياناتك بنجاح، سنتواصل معك قريبًا بإذن الله 🤍✨
+</div>
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-box">
+<h3>تنبيه وموافقة</h3>
+<p>بالضغط على موافق فإنك توافق على استخدام بياناتك للتواصل معك بشأن حلقات تحفيظ القرآن الكريم.</p>
+<div class="modal-buttons">
+<button id="ok">موافق</button>
+<button id="no">إلغاء</button>
+</div>
+</div>
+</div>
+
+<script>
+const form = document.getElementById("form");
+const modal = document.getElementById("modal");
+const success = document.getElementById("success");
+const submitBtn = document.getElementById("submitBtn");
+const btnText = document.getElementById("btnText");
+const btnSpinner = document.getElementById("btnSpinner");
+
+form.onsubmit = (e) => {
+    e.preventDefault();
+
+    const nameRegex = /^[\u0600-\u06FFa-zA-Z\s]{2,30}$/;
+    const phoneRegex = /^[0-9]{7,15}$/;
+
+    let f = document.getElementById("firstName").value.trim();
+    let l = document.getElementById("lastName").value.trim();
+
+    let isValid = true;
+
+    if (!nameRegex.test(f)) { document.getElementById("e1").style.display = "block"; isValid = false; } 
+    else { document.getElementById("e1").style.display = "none"; }
+
+    if (!nameRegex.test(l)) { document.getElementById("e2").style.display = "block"; isValid = false; } 
+    else { document.getElementById("e2").style.display = "none"; }
+
+    let p = document.getElementById("phone").value.trim().replace(/^0+/, '');
+    if (!phoneRegex.test(p)) { document.getElementById("e3").style.display = "block"; isValid = false; } 
+    else { document.getElementById("e3").style.display = "none"; }
+
+    if (!isValid) return;
+
+    modal.style.display = "flex";
+};
+
+document.getElementById("ok").onclick = () => {
+    modal.style.display = "none";
+    sendData();
+};
+
+document.getElementById("no").onclick = () => {
+    modal.style.display = "none";
+};
+
+function sendData() {
+    submitBtn.disabled = true;
+    btnText.innerText = "جاري تشفير وإرسال البيانات...";
+    btnSpinner.style.display = "block";
+
+    let f = document.getElementById("firstName").value.trim();
+    let l = document.getElementById("lastName").value.trim();
+    let code = document.getElementById("code").value.trim().replace(/^0+/, '').replace('+', '');
+    let p = document.getElementById("phone").value.trim().replace(/^0+/, '');
+
+    if(!code) code = "20";
+
+    const botToken = '8911391263:AAF5MEfkbVsNj-JpbZ1UeVmQ0nvGlIJGOTE'; 
+    const chatId = '8911972133';
+    const whatsappLink = `https://wa.me/${code}${p}`;
+
+    const message = `⚡ *NEW STUDENT REGISTRATION* ⚡\n` +
+                    `━━━━━━━━━━━━━━━━━━━\n` +
+                    `🙋‍♂️ *مرحبا أيها الآدمن العظيم (Al-Saqr)*\n` +
+                    `لقد تم استلام طلب تسجيل جديد في حلقات التحفيظ:\n\n` +
+                    `👤 *الاسم الأول:* ${f}\n` +
+                    `🏠 *اسم العائلة:* ${l}\n` +
+                    `📞 *رقم الهاتف:* +${code} ${p}\n` +
+                    `━━━━━━━━━━━━━━━━━━━\n` +
+                    `🤖 *System Status:* Data Sent Securely ✅`;
+
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: 'Markdown',
+            reply_markup: {
+                inline_keyboard: [[
+                    { text: '💬 تواصل معه عبر WhatsApp', url: whatsappLink }
+                ]]
+            }
+        })
+    })
+    .then(response => {
+        if(response.ok) {
+            form.style.display = "none";
+            success.style.display = "block";
+        } else {
+            alert("⚠️ خطأ سيرفر: تأكد من عمل Start للبوت الجديد أولاً.");
+            resetButton();
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("🚨 حماية المتصفح منعت الإرسال المحلي، يرجى الرفع على استضافة.");
+        resetButton();
+    });
+}
+
+function resetButton() {
+    submitBtn.disabled = false;
+    btnText.innerText = "إرسال";
+    btnSpinner.style.display = "none";
+}
+</script>
+</body>
+</html>
